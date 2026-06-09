@@ -14,6 +14,7 @@ type AppView = 'hero' | 'draft' | 'ranked';
 export default function App() {
   const [view, setView] = useState<AppView>('hero');
   const [draftCharges, setDraftCharges] = useState<ExtractedCharge[]>([]);
+  const [draftInputType, setDraftInputType] = useState<'text' | 'screenshot'>('text');
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [entitlement, setEntitlementState] = useState<Entitlement>(getEntitlement());
   const [scanCount, setScanCount] = useState(store.getScanCount());
@@ -28,9 +29,10 @@ export default function App() {
     }
   }, []);
 
-  function handleExtracted(charges: ExtractedCharge[]) {
+  function handleExtracted(charges: ExtractedCharge[], inputType: 'text' | 'screenshot') {
     setParseError(null);
     setDraftCharges(charges);
+    setDraftInputType(inputType);
     setView('draft');
   }
 
@@ -61,6 +63,7 @@ export default function App() {
   function handleDraftCancel() {
     setView('hero');
     setDraftCharges([]);
+    setDraftInputType('text');
     setParseError(null);
   }
 
@@ -85,8 +88,9 @@ export default function App() {
 
   function handleDeleteSub(id: string) {
     store.delete(id);
-    setSubscriptions(store.getAll());
-    if (store.getAll().length === 0) {
+    const remaining = store.getAll();
+    setSubscriptions(remaining);
+    if (remaining.length === 0) {
       setView('hero');
     }
   }
@@ -155,6 +159,7 @@ export default function App() {
         {view === 'draft' && (
           <DraftEditor
             charges={draftCharges}
+            inputType={draftInputType}
             onConfirm={handleConfirm}
             onCancel={handleDraftCancel}
           />

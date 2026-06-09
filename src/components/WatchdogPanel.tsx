@@ -1,10 +1,22 @@
+import { useState } from 'react';
 import { Subscription, monthlyAmountCents } from '../types';
 
 interface Props {
   subscriptions: Subscription[];
 }
 
+const FORWARDING_ADDRESS = 'watchdog+[coming-soon]@subspotter.app';
+
 export default function WatchdogPanel({ subscriptions }: Props) {
+  const [copied, setCopied] = useState(false);
+
+  function handleCopy() {
+    navigator.clipboard.writeText(FORWARDING_ADDRESS).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
   return (
     <div className="mt-8 space-y-4">
       <div className="flex items-center gap-2">
@@ -25,10 +37,13 @@ export default function WatchdogPanel({ subscriptions }: Props) {
         </p>
         <div className="flex gap-2 items-center">
           <code className="flex-1 text-xs bg-gray-800 border border-gray-700 rounded px-3 py-2 text-gray-400 font-mono">
-            watchdog+[coming-soon]@subspotter.app
+            {FORWARDING_ADDRESS}
           </code>
-          <button disabled className="text-xs px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-600 cursor-not-allowed">
-            Copy
+          <button
+            onClick={handleCopy}
+            className="text-xs px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-gray-300 hover:bg-gray-700 transition-colors"
+          >
+            {copied ? 'Copied!' : 'Copy'}
           </button>
         </div>
       </div>

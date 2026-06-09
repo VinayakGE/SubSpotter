@@ -3,6 +3,7 @@ import { ExtractedCharge, Subscription, Cadence, detectIsAITool } from '../types
 
 interface Props {
   charges: ExtractedCharge[];
+  inputType: 'text' | 'screenshot';
   onConfirm: (subscriptions: Subscription[]) => void;
   onCancel: () => void;
 }
@@ -11,7 +12,7 @@ interface EditableCharge extends ExtractedCharge {
   deleted: boolean;
 }
 
-export default function DraftEditor({ charges, onConfirm, onCancel }: Props) {
+export default function DraftEditor({ charges, inputType, onConfirm, onCancel }: Props) {
   const [editables, setEditables] = useState<EditableCharge[]>(
     charges.map(c => ({ ...c, deleted: false }))
   );
@@ -39,7 +40,7 @@ export default function DraftEditor({ charges, onConfirm, onCancel }: Props) {
         currency: e.currency,
         cadence: e.cadence,
         sourceLine: e.sourceLine,
-        source: 'screenshot' as const,
+        source: inputType === 'screenshot' ? 'screenshot' as const : 'manual' as const,
         confirmedAt: now,
         isAITool: detectIsAITool(e.merchant),
       }));
@@ -62,6 +63,22 @@ export default function DraftEditor({ charges, onConfirm, onCancel }: Props) {
       {/* Draft notice banner */}
       <div className="p-3 rounded-lg bg-indigo-950/40 border border-indigo-800/50 text-indigo-300 text-sm">
         <strong>Draft — not saved yet.</strong> These are AI suggestions. Review each one before confirming.
+      </div>
+
+      {/* Bulk actions */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => setEditables(prev => prev.map(e => ({ ...e, deleted: false })))}
+          className="text-xs px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors"
+        >
+          Select all
+        </button>
+        <button
+          onClick={() => setEditables(prev => prev.map(e => ({ ...e, deleted: true })))}
+          className="text-xs px-3 py-1.5 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors"
+        >
+          Deselect all
+        </button>
       </div>
 
       {/* Charges list */}
