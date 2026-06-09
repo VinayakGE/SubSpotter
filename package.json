@@ -7,7 +7,8 @@
     "dev:client": "vite",
     "dev:server": "tsx watch server/index.ts",
     "build": "vite build",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.36.3",
