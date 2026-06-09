@@ -1,0 +1,22 @@
+ACME BANK — Statement Period: May 1–31, 2025
+Account: Checking ****4521
+
+DATE        DESCRIPTION                          AMOUNT
+---------------------------------------------------------
+05/01/2025  NETFLIX.COM                          -$15.49
+05/03/2025  SPOTIFY USA                          -$10.99
+05/05/2025  OPENAI *CHATGPT PLUS                 -$20.00
+05/07/2025  ANTHROPIC *CLAUDE PRO                -$20.00
+05/08/2025  MIDJOURNEY INC                       -$10.00
+05/10/2025  PLANET FITNESS #0342                 -$24.99
+05/12/2025  DROPBOX INC                          -$11.99
+05/15/2025  CLASSMATES.COM RENEWAL               -$3.00
+05/18/2025  AMAZON PRIME                         -$14.99
+05/20/2025  HULU LLC                             -$7.99
+05/22/2025  ADOBE CREATIVE CLOUD                 -$54.99
+05/25/2025  GITHUB COPILOT MONTHLY               -$10.00
+05/28/2025  DUOLINGO SUPER                       -$6.99
+
+Beginning Balance: $3,241.00
+Total Debits: -$211.41
+Ending Balance: $3,029.59

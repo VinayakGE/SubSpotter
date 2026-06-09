@@ -1,0 +1,24 @@
+RIVERSTONE CREDIT UNION — Account Statement
+Account Number: ****8834  |  Period: April 2025
+
+POSTED TRANSACTIONS
+-------------------
+Apr 02  DISNEY PLUS SUBSCRIPTION         USD  -13.99
+Apr 04  PERPLEXITY AI PRO                USD  -20.00
+Apr 05  NYT DIGITAL SUBSCRIPTION         USD   -4.25
+Apr 07  MICROSOFT 365 PERSONAL           USD   -9.99
+Apr 09  APPLE ICLOUD+ 200GB              USD   -2.99
+Apr 11  HEADSPACE INC                    USD   -12.99
+Apr 13  GRAMMARLY PREMIUM ANNUAL        USD  -144.00
+Apr 14  CURSOR PRO MONTHLY               USD   -20.00
+Apr 16  LASTPASS PREMIUM                 USD   -3.00
+Apr 18  CALM APP SUBSCRIPTION            USD   -14.99
+Apr 21  LINKEDIN PREMIUM CAREER          USD   -39.99
+Apr 23  PELOTON DIGITAL MONTHLY          USD   -12.99
+Apr 26  CODECADEMY PRO                   USD   -15.99
+Apr 29  EXPRESSVPN MONTHLY               USD   -12.95
+
+Account Summary
+Opening Balance: $5,100.00
+Total Charges:   -$328.11
+Closing Balance: $4,771.89
