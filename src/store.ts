@@ -64,18 +64,27 @@ export const store = {
   exportCSV(): string {
     const all = readAll();
     const header = 'id,merchant,amountCents,currency,cadence,usageTag,isAITool,source,confirmedAt,sourceLine';
+    // RFC 4180: wrap any field containing commas, double-quotes, or newlines in double-quotes;
+    // escape internal double-quotes by doubling them.
+    function csvField(value: string | number | boolean | undefined): string {
+      const str = String(value ?? '');
+      if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+        return '"' + str.replace(/"/g, '""') + '"';
+      }
+      return str;
+    }
     const rows = all.map(s =>
       [
-        s.id,
-        JSON.stringify(s.merchant),
-        s.amountCents,
-        s.currency,
-        s.cadence,
-        s.usageTag ?? '',
-        s.isAITool,
-        s.source,
-        s.confirmedAt,
-        JSON.stringify(s.sourceLine)
+        csvField(s.id),
+        csvField(s.merchant),
+        csvField(s.amountCents),
+        csvField(s.currency),
+        csvField(s.cadence),
+        csvField(s.usageTag ?? ''),
+        csvField(s.isAITool),
+        csvField(s.source),
+        csvField(s.confirmedAt),
+        csvField(s.sourceLine)
       ].join(',')
     );
     return [header, ...rows].join('\n');

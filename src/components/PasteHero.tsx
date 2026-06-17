@@ -2,7 +2,7 @@ import { useState, useRef, DragEvent, ClipboardEvent } from 'react';
 import { ExtractedCharge, ExtractResponse, RawExtractedCharge } from '../types';
 
 interface Props {
-  onExtracted: (charges: ExtractedCharge[]) => void;
+  onExtracted: (charges: ExtractedCharge[], inputType: 'text' | 'screenshot') => void;
   onParseError: (msg: string) => void;
   onScanAttempt: () => boolean;
   onScanComplete: () => void;
@@ -18,9 +18,10 @@ export default function PasteHero({ onExtracted, onParseError, onScanAttempt, on
   async function callExtract(payload: { imageBase64?: string; text?: string }) {
     if (!onScanAttempt()) return;
 
+    const inputType: 'text' | 'screenshot' = payload.imageBase64 ? 'screenshot' : 'text';
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:3001/api/extract', {
+      const res = await fetch('/api/extract', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -46,7 +47,7 @@ export default function PasteHero({ onExtracted, onParseError, onScanAttempt, on
         ...c,
         id: `draft-${Date.now()}-${i}`,
       }));
-      onExtracted(charges);
+      onExtracted(charges, inputType);
     } catch (err) {
       console.error(err);
       onParseError("Couldn't reach the server. Make sure `npm run dev:server` is running.");

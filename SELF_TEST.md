@@ -98,7 +98,7 @@ Run through each item before shipping. Each constraint maps to a non-negotiable 
 - `server/index.ts`: reads `process.env.ANTHROPIC_API_KEY` — never passed to responses.
 - `server/.env` is in `.gitignore` (verify with `git check-ignore server/.env`).
 - No `VITE_ANTHROPIC` variable anywhere in `src/`.
-- Client code in `src/` only calls `http://localhost:3001/api/extract` — it never calls the Anthropic API directly.
+- Client code in `src/` only calls `/api/extract` (relative URL, proxied to port 3001 by Vite) — it never calls the Anthropic API directly.
 
 **Manual test:**
 1. Run `grep -r "ANTHROPIC" src/` — should return zero results.
@@ -123,3 +123,26 @@ Run through each item before shipping. Each constraint maps to a non-negotiable 
 3. Click upgrade in the UpgradeCTA modal — it should simulate tier change locally (dev behavior), not redirect to Stripe.
 
 **Pass if:** 3 clearly-marked TODO comments exist; no Stripe SDK present; upgrade flow is clearly a stub.
+
+---
+
+## 8. New scan / data flow works end-to-end
+
+**What to check:**
+- Full flow from paste → draft → confirm → ranked list → new scan works without page reload.
+- Data persists in localStorage and survives a page refresh.
+- Deleting the last subscription returns to the hero screen.
+
+**Manual test:**
+1. Open the app at http://localhost:5173 (run `npm run dev` first).
+2. Copy the contents of `fixtures/sample1.txt` and paste into the text area.
+3. Click "Scan for subscriptions" — the spinner should appear, then the draft screen loads.
+4. Verify each extracted charge shows a source line in monospace below the merchant name.
+5. Edit one merchant name. Remove one false positive with the "Remove" button. Click Confirm.
+6. Verify the ranked list appears, sorted by monthly cost. Zombie badges appear on rarely/never-used subs.
+7. Click "+ New Scan" in the header. Paste `fixtures/sample2.txt`. Confirm again.
+8. Verify both batches appear in the ranked list (cumulative).
+9. Refresh the page — all subscriptions should still be present (localStorage persisted).
+10. Open Dev Menu → "Clear all data". Verify the ranked list empties and the hero screen appears.
+
+**Pass if:** Each step completes without errors, data persists across refreshes, and clearing data resets the app to the initial hero screen.

@@ -1,86 +1,110 @@
 # SubSpotter
 
-**Privacy-first subscription auditor** — paste your bank statement, spot your subscriptions, kill the zombies.
+**Privacy-first subscription auditor** — paste your bank statement, let AI find subscriptions, review the draft, kill the zombies.
 
-## What it does
+## Features
 
-1. Paste a bank statement screenshot or raw text
-2. AI extracts subscription charges (editable draft — you verify everything)
-3. Confirm → see subscriptions ranked by cost-per-use
-4. Zombie flags on rarely/never-used subs
-5. Per-subscription cancel guides with deep links
+- Paste a bank statement screenshot or raw text — no bank linking, ever
+- AI extracts subscription charges into an editable draft (you verify before anything is saved)
+- Subscriptions ranked by monthly cost-per-use
+- Zombie flags on rarely/never-used subscriptions costing more than $5/month
+- Per-subscription cancel guides with numbered steps and deep links
+- AI tool grouping (ChatGPT, Claude, Midjourney, etc.)
+- CSV export for your records
+- Watchdog tier with email-forwarding stub for renewal and price-hike alerts
 
-## Privacy model
+## Prerequisites
 
-- **No bank linking, no Plaid, no OAuth** — you paste; we never connect to your bank
-- **API key stays server-side** — the Anthropic key never touches the browser
-- **You take all final actions** — cancel guides link you to the service; SubSpotter never cancels on your behalf
+- Node.js 18+
+- An Anthropic API key — get one at [console.anthropic.com](https://console.anthropic.com)
 
 ## Setup
 
-### Prerequisites
-- Node.js 18+
-- An Anthropic API key (get one at console.anthropic.com)
-
-### Install & run
 ```bash
+# 1. Install dependencies
 npm install
 
-# Set up your API key
+# 2. Create your server environment file
 cp server/.env.example server/.env
-# Edit server/.env and add: ANTHROPIC_API_KEY=sk-ant-...
 
-# Run client + server together
+# 3. Add your API key to server/.env
+#    ANTHROPIC_API_KEY=sk-ant-...
+
+# 4. Start the app (client + server together)
 npm run dev
 ```
 
-Client runs at http://localhost:5173
-Server runs at http://localhost:3001
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3001
 
-### Testing without an API key
-Use the sample fixtures in `fixtures/sample1.txt` and `fixtures/sample2.txt` — paste their content into the app.
+## Testing without an API key
+
+Paste the contents of `fixtures/sample1.txt` or `fixtures/sample2.txt` into the text area and click "Scan for subscriptions". These are fake bank statements that exercise the full flow without real transaction data.
 
 ## Architecture
 
 ```
-Browser (Vite/React)
-  |  paste image or text
-  v
-POST /api/extract (Express, port 3001)
-  |  calls Anthropic Messages API
-  v
-Structured JSON -> editable draft in browser
-  |  user edits + confirms
-  v
-localStorage store -> ranked view + cancel guides
+┌─────────────────────────────────────────┐
+│  Browser  (Vite + React + TypeScript)   │
+│  port 5173                              │
+│                                         │
+│  PasteHero  ──paste──▶  DraftEditor     │
+│                              │ confirm  │
+│                              ▼          │
+│              RankedList + CancelGuide   │
+│              (localStorage store)       │
+└──────────┬──────────────────────────────┘
+           │ POST /api/extract (proxy)
+           ▼
+┌─────────────────────────────────────────┐
+│  Express server  (tsx, port 3001)       │
+│                                         │
+│  Reads ANTHROPIC_API_KEY from .env      │
+│  Calls Anthropic Messages API           │
+│  Returns structured JSON charges        │
+└─────────────────────────────────────────┘
 ```
 
 ### Key files
+
 | File | Purpose |
 |------|---------|
 | `src/types.ts` | All shared TypeScript types |
 | `src/store.ts` | localStorage-backed subscription store |
-| `src/entitlements.ts` | Free/unlocked/watchdog tier logic |
+| `src/entitlements.ts` | Free / unlocked / watchdog tier logic |
 | `src/cancelGuides.ts` | Hardcoded cancel guides for major services |
-| `server/index.ts` | Express proxy for Anthropic API |
-| `fixtures/` | Fake bank statements for testing |
+| `server/index.ts` | Express proxy for Anthropic API calls |
+| `fixtures/` | Fake bank statements for manual testing |
+| `SELF_TEST.md` | Manual verification checklist |
 
 ## Entitlement tiers
 
 | Tier | Scans | Cancel guides | Export | Alerts |
 |------|-------|---------------|--------|--------|
-| Free | 1 | Basic | - | - |
-| Unlocked | Unlimited | Full + deep links | CSV | - |
-| Watchdog | Unlimited | Full + deep links | CSV | Renewal/price-hike stubs |
+| **free** | 1 | Basic | — | — |
+| **unlocked** | Unlimited | Full + deep links | CSV | — |
+| **watchdog** | Unlimited | Full + deep links | CSV | Renewal / price-hike stubs |
 
-Toggle tiers via the dev menu (bottom-right floating button).
+Toggle tiers via the dev menu (floating button, bottom-right corner). Stripe integration is stubbed with a `// TODO: wire Stripe Checkout here` comment.
 
 ## Scripts
 
-```bash
-npm run dev          # Run client + server concurrently
-npm run dev:client   # Vite dev server only
-npm run dev:server   # Express server only (with hot reload)
-npm run build        # Production build
-npm run typecheck    # TypeScript type check only
-```
+| Command | What it does |
+|---------|-------------|
+| `npm run dev` | Run client and server concurrently |
+| `npm run dev:client` | Vite dev server only (port 5173) |
+| `npm run dev:server` | Express server only with hot reload |
+| `npm run build` | Production build |
+| `npm run typecheck` | TypeScript type check (no emit) |
+| `npm run lint` | Alias for typecheck |
+
+## Constraints enforced
+
+1. **No bank linking** — `SubscriptionSource` never includes `'bank_link'`. Only pasted text or screenshots accepted.
+2. **Every amount has a sourceLine** — ties each charge back to the original statement line. Rendered on every card.
+3. **AI extraction is a draft** — nothing is confirmed until the user explicitly clicks the Confirm button.
+4. **Cancel guides = steps + deep link only** — SubSpotter never cancels on your behalf.
+5. **API key server-side only** — `ANTHROPIC_API_KEY` lives in `server/.env`; never in the client bundle.
+6. **Parse errors show friendly fallback** — if Anthropic returns unparseable JSON, a friendly message is shown. The app never crashes.
+
+See [SELF_TEST.md](./SELF_TEST.md) for the full manual verification checklist.
