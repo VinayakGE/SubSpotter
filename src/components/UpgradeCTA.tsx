@@ -45,27 +45,22 @@ export default function UpgradeCTA({ currentTier: _currentTier, onClose, onUpgra
               </button>
             </div>
 
-            {/* Watchdog tier */}
-            <div className="p-4 rounded-xl bg-violet-950/30 border border-violet-800/50 space-y-2">
+            {/* Watchdog tier — not yet available for purchase */}
+            <div className="p-4 rounded-xl bg-gray-900/60 border border-gray-700/50 space-y-2 opacity-70">
               <div className="flex items-center justify-between">
-                <p className="font-semibold text-violet-200">Watchdog</p>
-                <span className="text-sm text-violet-400 font-mono">$X/mo</span>
+                <p className="font-semibold text-gray-400">Watchdog</p>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-800 text-gray-500 border border-gray-700">
+                  Coming soon
+                </span>
               </div>
-              <ul className="text-xs text-gray-400 space-y-1">
+              <ul className="text-xs text-gray-500 space-y-1">
                 <li>✓ Everything in Unlocked</li>
-                <li>✓ Saved subscriptions panel</li>
-                <li>✓ Renewal & price-hike alerts (coming soon)</li>
-                <li>✓ Email forwarding (coming soon)</li>
+                <li>○ Renewal & price-hike alerts</li>
+                <li>○ Email forwarding for auto-detection</li>
               </ul>
-              <button
-                onClick={() => {
-                  // TODO: wire Stripe Checkout here
-                  onUpgrade('watchdog');
-                }}
-                className="w-full py-2 rounded-lg bg-violet-700 text-white text-sm font-semibold hover:bg-violet-600 transition-colors"
-              >
-                Upgrade to Watchdog
-              </button>
+              <p className="text-xs text-gray-600 italic">
+                Server-side alerting is in development — we'll notify you when it's ready.
+              </p>
             </div>
           </div>
 
