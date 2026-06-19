@@ -107,4 +107,8 @@ Toggle tiers via the dev menu (floating button, bottom-right corner). Stripe int
 5. **API key server-side only** — `ANTHROPIC_API_KEY` lives in `server/.env`; never in the client bundle.
 6. **Parse errors show friendly fallback** — if Anthropic returns unparseable JSON, a friendly message is shown. The app never crashes.
 
+### Privacy note
+
+Your statement text or screenshot travels from your browser → the SubSpotter Express server → Anthropic's API for extraction, then the result is returned. **Nothing is persisted on the server.** The server holds your `ANTHROPIC_API_KEY` and acts as a proxy; it does not log or store any statement content. Confirmed subscriptions are saved only in your browser's `localStorage`.
+
 See [SELF_TEST.md](./SELF_TEST.md) for the full manual verification checklist.

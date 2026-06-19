@@ -112,7 +112,11 @@ export default function PasteHero({ onExtracted, onParseError, onScanAttempt, on
 
       {/* Privacy badges */}
       <div className="flex flex-wrap gap-3 justify-center">
-        {['No bank linking', 'API key stays server-side', 'You take all final actions'].map(badge => (
+        {[
+          'No bank linking',
+          'Statement sent to AI for extraction only — not stored',
+          'You confirm before anything is saved',
+        ].map(badge => (
           <span key={badge} className="text-xs px-3 py-1.5 rounded-full bg-gray-800 text-gray-400 border border-gray-700">
             ✓ {badge}
           </span>
