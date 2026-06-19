@@ -21,8 +21,8 @@ test.describe('SubSpotter smoke tests', () => {
     const submitBtn = page.getByRole('button', { name: /analys|scan|extract/i });
     await expect(submitBtn).toBeVisible();
 
-    // Clicking with empty input should not navigate away from hero
-    await submitBtn.click();
+    // Button is disabled when input is empty — empty submit cannot navigate away from hero
+    await expect(submitBtn).toBeDisabled();
     await expect(page.getByRole('textbox')).toBeVisible();
   });
 
